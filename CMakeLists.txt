@@ -42,8 +42,8 @@ catkin_package(
 
 set(OPENNI2_DIR ~/OpenNI2)
 set(OPENNI2_WRAPPER /opt/ros/indigo/include/openni2_camera/)
-set(NITE2_DIR ~/Openni2/NiTE-2.0.0/)
-set(NITE2_LIB ~/Openni2/NiTE-2.0.0/Redist/libNiTE2.so)
+set(NITE2_DIR /root/NiTE-Linux-x64-2.2)
+set(NITE2_LIB /root/NiTE-Linux-x64-2.2/Redist/libNiTE2.so)
 
 link_directories(${OPENNI2_DIR}/Bin/x64-Release)
 
@@ -53,6 +53,7 @@ include_directories(${OPENNI2_DIR}/Include)
 include_directories(${OPENNI2_WRAPPER})
 include_directories(${NITE2_DIR}/Include)
 include_directories(${OpenCV_INCLUDE_DIRS}/include)
+include_directories(/usr/include/pcl-1.7/pcl/io)
 
 add_executable(xtion_tracker src/xtion_tracker_node.cpp)
 target_link_libraries(xtion_tracker OpenNI2 ${NITE2_LIB} ${OpenCV_LIBRARIES} ${catkin_LIBRARIES})
