@@ -175,12 +175,13 @@ int main(int argc, char** argv)
   }
 
   // Initial OpenNI
-  if (openni::OpenNI::initialize() != openni::STATUS_OK)
+  openni::Status rc = openni::STATUS_OK;
+  if (rc != openni::STATUS_OK)
   {
-    ROS_ERROR("openni initial error: \n");
-    return -1;
+            printf("%s: Initialize failed\n%s\n", argv[0], openni::OpenNI::getExtendedError());
+            return -1;
+                        
   }
-
   openni::Device devDevice;
   if (devDevice.open(openni::ANY_DEVICE) != openni::STATUS_OK)
   {

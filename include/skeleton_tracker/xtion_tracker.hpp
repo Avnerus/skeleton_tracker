@@ -95,13 +95,15 @@ public:
     }
 
     // Initialize OpenNI
-    if (openni::OpenNI::initialize() != openni::STATUS_OK)
-    {
-      ROS_FATAL("OpenNI initial error");
-      ros::shutdown();
-      return;
-    }
-
+    openni::Status rc = openni::STATUS_OK;
+    rc = openni::OpenNI::initialize();
+	if (rc != openni::STATUS_OK)
+	{
+		printf("Initialize failed\n%s\n", openni::OpenNI::getExtendedError());
+        ROS_FATAL("OpenNI initialization error");
+        ros::shutdown();
+		return; 
+	}
     // Open the device
     if (devDevice_.open(openni::ANY_DEVICE) != openni::STATUS_OK)
     {
