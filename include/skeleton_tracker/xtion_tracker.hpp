@@ -35,7 +35,7 @@
 #define ALPHA 1/256
 #endif
 
-#define MAX_USERS 10
+#define MAX_USERS 1
 
 #define USER_MESSAGE(msg) \
         {printf("[%08llu] User #%d:\t%s\n",ts, user.getId(),msg);}
@@ -469,60 +469,63 @@ private:
     const nite::Array<nite::UserData>& users = userTrackerFrame_.getUsers();
 
     // Get the skeleton for every user
-    //for (int i = 0; i < users.getSize(); ++i)
+    for (int i = 0; i < users.getSize(); ++i)
     // Get only the first user
-    //{
-      const nite::UserData& user = users[0];
-      updateUserState(user, userTrackerFrame_.getTimestamp());
-      if (user.isNew())
-      {
-        userTracker_.startSkeletonTracking(user.getId());
-      }
-      else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
-      {
-        JointMap named_joints;
-
-        named_joints["head"] = (user.getSkeleton().getJoint(nite::JOINT_HEAD));
-        named_joints["neck"] = (user.getSkeleton().getJoint(nite::JOINT_NECK));
-        named_joints["left_shoulder"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_SHOULDER));
-        named_joints["right_shoulder"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_SHOULDER));
-        named_joints["left_elbow"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_ELBOW));
-        named_joints["right_elbow"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_ELBOW));
-        named_joints["left_hand"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND));
-        named_joints["right_hand"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND));
-        named_joints["torso"] = (user.getSkeleton().getJoint(nite::JOINT_TORSO));
-        named_joints["left_hip"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_HIP));
-        named_joints["right_hip"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_HIP));
-        named_joints["left_knee"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_KNEE));
-        named_joints["right_knee"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_KNEE));
-        named_joints["left_foot"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_FOOT));
-        named_joints["right_foot"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_FOOT));
-
-        // Publish at a known order
-        publishJointTF("head", named_joints["head"], user.getId());
-        publishJointTF("left_elbow", named_joints["left_elbow"], user.getId());
-        publishJointTF("left_foot", named_joints["left_foot"], user.getId());
-        publishJointTF("left_hand", named_joints["left_hand"], user.getId());
-        publishJointTF("left_hip", named_joints["left_hip"], user.getId());
-        publishJointTF("left_knee", named_joints["left_knee"], user.getId());
-        publishJointTF("left_shoulder", named_joints["left_shoulder"], user.getId());
-        publishJointTF("neck", named_joints["neck"], user.getId());
-        publishJointTF("right_elbow", named_joints["right_elbow"], user.getId());
-        publishJointTF("right_foot", named_joints["right_foot"], user.getId());
-        publishJointTF("right_hand", named_joints["right_hand"], user.getId());
-        publishJointTF("right_hip", named_joints["right_hip"], user.getId());
-        publishJointTF("right_knee", named_joints["right_knee"], user.getId());
-        publishJointTF("right_shoulder", named_joints["right_shoulder"], user.getId());
-        publishJointTF("torso", named_joints["torso"], user.getId());
-
-
-        /*for (JointMap::iterator it = named_joints.begin(); it != named_joints.end(); ++it)
+    {
+      const nite::UserData& user = users[i];
+      //if (user.getId() == 0) {
+        updateUserState(user, userTrackerFrame_.getTimestamp());
+        if (user.isNew())
         {
-          publishJointTF(it->first, it->second, user.getId());
-        }*/
-        // Add the user's ID
-        ids.users.push_back(int(user.getId()));
-     // }
+          userTracker_.startSkeletonTracking(user.getId());
+        }
+        else if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
+        {
+          JointMap named_joints;
+
+          named_joints["head"] = (user.getSkeleton().getJoint(nite::JOINT_HEAD));
+          named_joints["neck"] = (user.getSkeleton().getJoint(nite::JOINT_NECK));
+          named_joints["left_shoulder"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_SHOULDER));
+          named_joints["right_shoulder"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_SHOULDER));
+          named_joints["left_elbow"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_ELBOW));
+          named_joints["right_elbow"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_ELBOW));
+          named_joints["left_hand"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND));
+          named_joints["right_hand"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND));
+          named_joints["torso"] = (user.getSkeleton().getJoint(nite::JOINT_TORSO));
+          named_joints["left_hip"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_HIP));
+          named_joints["right_hip"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_HIP));
+          named_joints["left_knee"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_KNEE));
+          named_joints["right_knee"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_KNEE));
+          named_joints["left_foot"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_FOOT));
+          named_joints["right_foot"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_FOOT));
+
+          // Publish at a known order
+          publishJointTF("head", named_joints["head"], user.getId());
+          publishJointTF("left_elbow", named_joints["left_elbow"], user.getId());
+          publishJointTF("left_foot", named_joints["left_foot"], user.getId());
+          publishJointTF("left_hand", named_joints["left_hand"], user.getId());
+          publishJointTF("left_hip", named_joints["left_hip"], user.getId());
+          publishJointTF("left_knee", named_joints["left_knee"], user.getId());
+          publishJointTF("left_shoulder", named_joints["left_shoulder"], user.getId());
+          publishJointTF("neck", named_joints["neck"], user.getId());
+          publishJointTF("right_elbow", named_joints["right_elbow"], user.getId());
+          publishJointTF("right_foot", named_joints["right_foot"], user.getId());
+          publishJointTF("right_hand", named_joints["right_hand"], user.getId());
+          publishJointTF("right_hip", named_joints["right_hip"], user.getId());
+          publishJointTF("right_knee", named_joints["right_knee"], user.getId());
+          publishJointTF("right_shoulder", named_joints["right_shoulder"], user.getId());
+          publishJointTF("torso", named_joints["torso"], user.getId());
+
+
+          /*for (JointMap::iterator it = named_joints.begin(); it != named_joints.end(); ++it)
+          {
+            publishJointTF(it->first, it->second, user.getId());
+          }*/
+          // Add the user's ID
+          ids.users.push_back(int(user.getId()));
+         }
+
+      //}
     }
     // Publish the users' IDs
     userPub_.publish(ids);
