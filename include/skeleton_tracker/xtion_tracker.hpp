@@ -119,7 +119,7 @@ public:
     // Set the depth mode
     if (depthStream_.create(devDevice_, openni::SENSOR_DEPTH) == openni::STATUS_OK)
     {
-      depthMode_ = depthStream_.getSensorInfo().getSupportedVideoModes()[4];
+      depthMode_ = depthStream_.getSensorInfo().getSupportedVideoModes()[0];
       ROS_INFO("The wished depth mode is %d x %d at %d FPS. Pixel format %d", depthMode_.getResolutionX(),
                depthMode_.getResolutionY(), depthMode_.getFps(), depthMode_.getPixelFormat());
       if (depthStream_.setVideoMode(depthMode_) != openni::STATUS_OK)
@@ -469,9 +469,10 @@ private:
     const nite::Array<nite::UserData>& users = userTrackerFrame_.getUsers();
 
     // Get the skeleton for every user
-    for (int i = 0; i < users.getSize(); ++i)
-    {
-      const nite::UserData& user = users[i];
+    //for (int i = 0; i < users.getSize(); ++i)
+    // Get only the first user
+    //{
+      const nite::UserData& user = users[0];
       updateUserState(user, userTrackerFrame_.getTimestamp());
       if (user.isNew())
       {
@@ -497,13 +498,31 @@ private:
         named_joints["left_foot"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_FOOT));
         named_joints["right_foot"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_FOOT));
 
-        for (JointMap::iterator it = named_joints.begin(); it != named_joints.end(); ++it)
+        // Publish at a known order
+        publishJointTF("head", named_joints["head"], user.getId());
+        publishJointTF("left_elbow", named_joints["left_elbow"], user.getId());
+        publishJointTF("left_foot", named_joints["left_foot"], user.getId());
+        publishJointTF("left_hand", named_joints["left_hand"], user.getId());
+        publishJointTF("left_hip", named_joints["left_hip"], user.getId());
+        publishJointTF("left_knee", named_joints["left_knee"], user.getId());
+        publishJointTF("left_shoulder", named_joints["left_shoulder"], user.getId());
+        publishJointTF("neck", named_joints["neck"], user.getId());
+        publishJointTF("right_elbow", named_joints["right_elbow"], user.getId());
+        publishJointTF("right_foot", named_joints["right_foot"], user.getId());
+        publishJointTF("right_hand", named_joints["right_hand"], user.getId());
+        publishJointTF("right_hip", named_joints["right_hip"], user.getId());
+        publishJointTF("right_knee", named_joints["right_knee"], user.getId());
+        publishJointTF("right_shoulder", named_joints["right_shoulder"], user.getId());
+        publishJointTF("torso", named_joints["torso"], user.getId());
+
+
+        /*for (JointMap::iterator it = named_joints.begin(); it != named_joints.end(); ++it)
         {
           publishJointTF(it->first, it->second, user.getId());
-        }
+        }*/
         // Add the user's ID
         ids.users.push_back(int(user.getId()));
-      }
+     // }
     }
     // Publish the users' IDs
     userPub_.publish(ids);
