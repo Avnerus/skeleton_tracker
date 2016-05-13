@@ -116,6 +116,8 @@ public:
     // Initialize the tracker
     nite::NiTE::initialize();
 
+    // NO NEED FOR VIDEO 
+    /*
     // Set the depth mode
     if (depthStream_.create(devDevice_, openni::SENSOR_DEPTH) == openni::STATUS_OK)
     {
@@ -140,6 +142,7 @@ public:
     }
 
     // Set the video mode
+    
     if (vsColorStream_.create(devDevice_, openni::SENSOR_COLOR) == openni::STATUS_OK)
     {
       // set video mode
@@ -169,7 +172,7 @@ public:
       ROS_FATAL("Can't create color stream on device: ");
       ros::shutdown();
       return;
-    }
+    }*/
 
     niteRc_ = userTracker_.create();
     if (niteRc_ != nite::STATUS_OK)
@@ -180,6 +183,8 @@ public:
     }
 
     // Start the RGB video stream and the depth video stream
+    // 
+    /*
     vsColorStream_.start();
     depthStream_.start();
 
@@ -190,17 +195,18 @@ public:
     pointCloudPub_ = nh_.advertise<pcl::PointCloud<pcl::PointXYZ> >("/camera/point_cloud", 5);
 
     // Initialize the depth image publisher
-    depthPub_ = it_.advertise("/camera/depth/image", 1);
+    depthPub_ = it_.advertise("/camera/depth/image", 1); */
 
     // Initialize the users IDs publisher
     userPub_ = nh_.advertise<skeleton_tracker::user_IDs>("/people", 1);
 
     // Initialize both the Camera Info publishers
+    /*
     depthInfoPub_ = nh_.advertise<sensor_msgs::CameraInfo>("/camera/depth/camera_info", 1);
 
-    rgbInfoPub_ = nh_.advertise<sensor_msgs::CameraInfo>("/camera/rgb/camera_info", 1);
+    rgbInfoPub_ = nh_.advertise<sensor_msgs::CameraInfo>("/camera/rgb/camera_info", 1); */
 
-    rate_ = new ros::Rate(100);
+    rate_ = new ros::Rate(500);
 
   }
   /**
@@ -216,6 +222,7 @@ public:
    */
   void spinner()
   {
+      /*
     // Broadcast the RGB video
     this->broadcastVideo();
 
@@ -229,7 +236,7 @@ public:
     this->getDepth();
 
     // Broadcast the depth camera info
-    depthInfoPub_.publish(this->fillCameraInfo(ros::Time::now(), false));
+    depthInfoPub_.publish(this->fillCameraInfo(ros::Time::now(), false)); */
 
     // Broadcast the joint frames (if they exist)
     this->getSkeleton();
@@ -470,7 +477,6 @@ private:
 
     // Get the skeleton for every user
     for (int i = 0; i < users.getSize(); ++i)
-    // Get only the first user
     {
       const nite::UserData& user = users[i];
       //if (user.getId() == 0) {
@@ -484,37 +490,44 @@ private:
           JointMap named_joints;
 
           named_joints["head"] = (user.getSkeleton().getJoint(nite::JOINT_HEAD));
-          named_joints["neck"] = (user.getSkeleton().getJoint(nite::JOINT_NECK));
           named_joints["left_shoulder"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_SHOULDER));
           named_joints["right_shoulder"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_SHOULDER));
           named_joints["left_elbow"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_ELBOW));
           named_joints["right_elbow"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_ELBOW));
           named_joints["left_hand"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_HAND));
           named_joints["right_hand"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_HAND));
+
+          /*
+           named_joints["neck"] = (user.getSkeleton().getJoint(nite::JOINT_NECK));
           named_joints["torso"] = (user.getSkeleton().getJoint(nite::JOINT_TORSO));
           named_joints["left_hip"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_HIP));
           named_joints["right_hip"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_HIP));
           named_joints["left_knee"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_KNEE));
           named_joints["right_knee"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_KNEE));
           named_joints["left_foot"] = (user.getSkeleton().getJoint(nite::JOINT_LEFT_FOOT));
-          named_joints["right_foot"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_FOOT));
+          named_joints["right_foot"] = (user.getSkeleton().getJoint(nite::JOINT_RIGHT_FOOT)); */
+
+          ///ROS_INFO_STREAM("Left hand " << named_joints["left_hand"].getPosition().x << "," <<  named_joints["left_hand"].getPosition().y << ", " << named_joints["left_hand"].getPosition().z);
 
           // Publish at a known order
           publishJointTF("head", named_joints["head"], user.getId());
+
           publishJointTF("left_elbow", named_joints["left_elbow"], user.getId());
-          publishJointTF("left_foot", named_joints["left_foot"], user.getId());
           publishJointTF("left_hand", named_joints["left_hand"], user.getId());
-          publishJointTF("left_hip", named_joints["left_hip"], user.getId());
-          publishJointTF("left_knee", named_joints["left_knee"], user.getId());
           publishJointTF("left_shoulder", named_joints["left_shoulder"], user.getId());
-          publishJointTF("neck", named_joints["neck"], user.getId());
+
           publishJointTF("right_elbow", named_joints["right_elbow"], user.getId());
-          publishJointTF("right_foot", named_joints["right_foot"], user.getId());
           publishJointTF("right_hand", named_joints["right_hand"], user.getId());
-          publishJointTF("right_hip", named_joints["right_hip"], user.getId());
-          publishJointTF("right_knee", named_joints["right_knee"], user.getId());
           publishJointTF("right_shoulder", named_joints["right_shoulder"], user.getId());
-          publishJointTF("torso", named_joints["torso"], user.getId());
+
+         // publishJointTF("left_foot", named_joints["left_foot"], user.getId());
+         // publishJointTF("left_hip", named_joints["left_hip"], user.getId());
+         // publishJointTF("left_knee", named_joints["left_knee"], user.getId());
+         // publishJointTF("neck", named_joints["neck"], user.getId());
+         // publishJointTF("right_foot", named_joints["right_foot"], user.getId());
+         // publishJointTF("right_hip", named_joints["right_hip"], user.getId());
+         // publishJointTF("right_knee", named_joints["right_knee"], user.getId());
+        //   publishJointTF("torso", named_joints["torso"], user.getId());
 
 
           /*for (JointMap::iterator it = named_joints.begin(); it != named_joints.end(); ++it)
